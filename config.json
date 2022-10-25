@@ -1,0 +1,7 @@
+{
+    "url-backend": "127.0.0.1",
+    "port": 8000,
+  
+    "data-db-connection": "mongodb+srv://sergiocantor:1234@cluster0.qlr5m72.mongodb.net/?retryWrites=true&w=majority",
+    "name-db":"app-academico"
+}
