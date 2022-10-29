@@ -53,6 +53,37 @@ def eliminarPartido(id):
 
 ###################################################################################
 #PATHS DE CANDIDATOS
+@app.route("/candidatos",methods=['GET'])
+def getCandidato():
+    json = miControladorCandidato.listar_candidato()
+    return jsonify(json)
+
+@app.route("/candidatos",methods=['POST'])
+def crearCandidato():
+    datos = request.get_json()
+    json = miControladorCandidato.crear_candidato(datos)
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['GET'])
+def listarCandidato(id):
+    json=miControladorCandidato.mostrar_candidato(id)
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['PUT'])
+def modificarCandidato(id):
+    datos = request.get_json()
+    json=miControladorCandidato.actualizar_candidato(id, datos)
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['DELETE'])
+def eliminarCandidato(id):
+    json=miControladorCandidato.eliminar_candidato(id)
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id_candidato>/partido/<string:id_partido>",methods=['PUT'])
+def asignarPartido(id_candidato,id_partido):
+    json=miControladorCandidato.asignar_partido(id_candidato, id_partido)
+    return jsonify(json)
 
 ###################################################################################
 #PATHS DE MESAS
