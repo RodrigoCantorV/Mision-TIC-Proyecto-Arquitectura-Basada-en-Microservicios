@@ -12,6 +12,10 @@ cors = CORS(app)
 # Importar controladores aqui
 from controladores.controladorMesas import ControladorMesa
 miControladorMesa = ControladorMesa()
+from controladores.controladorPartidoPolitico import ControladorPartidoPolitico
+miControladorPartido = ControladorPartidoPolitico()
+from controladores.controladorCandidatos import ControladorCandidato 
+miControladorCandidato = ControladorCandidato()
 ###################################################################################
 @app.route("/",methods=['GET'])
 def test():
@@ -20,6 +24,32 @@ def test():
     return jsonify(json)
 ###################################################################################
 #PATHS DE PARTIDOS POLITICOS
+@app.route("/partidos",methods=['GET'])
+def getPartido():
+    json = miControladorPartido.listar_partido()
+    return jsonify(json)
+
+@app.route("/partidos",methods=['POST'])
+def crearPartido():
+    datos = request.get_json()
+    json = miControladorPartido.crear_partido(datos)
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['GET'])
+def listarPartido(id):
+    json=miControladorPartido.mostrar_partido(id)
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['PUT'])
+def modificarPartido(id):
+    datos = request.get_json()
+    json=miControladorPartido.actualizar_partido(id, datos)
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['DELETE'])
+def eliminarPartido(id):
+    json=miControladorPartido.eliminar_partido(id)
+    return jsonify(json)
 
 ###################################################################################
 #PATHS DE CANDIDATOS
@@ -66,3 +96,4 @@ if __name__=='__main__':
     print("Server running : "+"http://"+dataConfig["url-backend"]+":" + str(dataConfig["port"]))
     serve(app,host=dataConfig["url-backend"],port=dataConfig["port"])
 
+###################################################################################

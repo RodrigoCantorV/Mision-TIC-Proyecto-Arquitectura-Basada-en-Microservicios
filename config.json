@@ -1,7 +1,7 @@
 {
     "url-backend": "127.0.0.1",
     "port": 8000,
-  
-    "data-db-connection": "mongodb+srv://sergiocantor:1234@cluster0.qlr5m72.mongodb.net/?retryWrites=true&w=majority",
+
+    "data-db-connection": "mongodb+srv://wcallejas:asdfg@cluster0.5zisgyt.mongodb.net/test",
     "name-db":"registraduria"
 }

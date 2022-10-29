@@ -67,14 +67,12 @@ class InterfaceRepositorio(Generic[T]):
     
     def findAll(self):
         laColeccion = self.baseDatos[self.coleccion]
- 
         data = []
         for x in laColeccion.find():
             x["_id"] = x["_id"].__str__()
             x = self.transformObjectIds(x)
             x = self.getValuesDBRef(x)
             data.append(x)
-       
         print(data)
         return data
 
