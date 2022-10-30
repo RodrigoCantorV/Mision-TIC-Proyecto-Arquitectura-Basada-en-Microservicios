@@ -6,7 +6,7 @@ from waitress import serve
 import json
 
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app)    
 
 ###################################################################################
 # Importar controladores aqui
@@ -16,6 +16,8 @@ from controladores.controladorPartidoPolitico import ControladorPartidoPolitico
 miControladorPartido = ControladorPartidoPolitico()
 from controladores.controladorCandidatos import ControladorCandidato 
 miControladorCandidato = ControladorCandidato()
+from controladores.controladorResultados import ControladorResultados
+miControladorResultado = ControladorResultados()
 ###################################################################################
 @app.route("/",methods=['GET'])
 def test():
@@ -115,6 +117,37 @@ def eliminarMesa(id):
     return jsonify(json)
 ###################################################################################
 #PATHS DE RESULTADOS
+@app.route("/resultados",methods=['GET'])
+def getResultados():
+    json = miControladorResultado.listar_resultado()
+    return jsonify(json)
+
+@app.route("/resultado/candidato/<string:id_candidato>/mesa/<string:id_mesa>",methods=['POST'])
+def crearResultado(id_candidato,id_mesa):
+    data = request.get_json()
+    json = miControladorResultado.crear_resultado(data,id_candidato,id_mesa)
+    return jsonify(json)
+
+@app.route("/resultado/<string:id>",methods=['GET'])
+def getResultado(id):
+    json=miControladorResultado.mostrar_resultado(id)
+    return jsonify(json)
+
+@app.route("/resultado/<string:id_resultado>/candidato/<string:id_candidato>/mesa/<string:id_mesa>",methods=['PUT'])
+def modificarResultado(id_resultado,id_candidato,id_mesa):
+    data = request.get_json()
+    json=miControladorResultado.actualizar_resultado(id_resultado,data,id_candidato,id_mesa)
+    return jsonify(json)
+
+@app.route("/resultado/<string:id>",methods=['DELETE'])
+def eliminarResultado(id):
+    json=miControladorResultado.eliminar_resultado(id)
+    return jsonify(json)
+
+@app.route("/resultado/consulta",methods=['GET'])
+def getConsultaf():
+    json=miControladorResultado.getConsulta5()
+    return jsonify(json)
 
 ###################################################################################
 def loadFileConfig():
