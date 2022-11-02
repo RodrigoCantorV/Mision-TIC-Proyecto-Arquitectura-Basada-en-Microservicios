@@ -1,6 +1,8 @@
 package com.gestionusuarios.usuarios.controladores;
 
+import com.gestionusuarios.usuarios.modelos.Rol;
 import com.gestionusuarios.usuarios.modelos.Usuario;
+import com.gestionusuarios.usuarios.repositorios.RepositorioRol;
 import com.gestionusuarios.usuarios.repositorios.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,8 @@ public class ControladorUsuario {
 
     @Autowired
     RepositorioUsuario miRepositorioUsuario;
+    @Autowired
+    RepositorioRol miRepositorioRol;
 
     @GetMapping("/listar")
     public List<Usuario> consultarUsuarios(){
@@ -44,4 +48,14 @@ public class ControladorUsuario {
         miRepositorioUsuario.deleteById(_idUsuario);
         return "El usuario con id: " + _idUsuario + " fue eliminado correctamente";
     }
+
+    @PutMapping("/{idUsuario}/rol/{idRol}")
+    public Usuario asignarRol(@PathVariable String idUsuario,@PathVariable String idRol){
+    Usuario consultaUsuario = miRepositorioUsuario.findById(idUsuario).orElse(null);
+    Rol consultaRol = miRepositorioRol.findById(idRol).orElse(null);
+    consultaUsuario.setRol(consultaRol);
+    return miRepositorioUsuario.save(consultaUsuario);
+
+    }
+
 }
