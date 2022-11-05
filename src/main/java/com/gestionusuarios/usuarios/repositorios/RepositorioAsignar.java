@@ -1,4 +1,7 @@
 package com.gestionusuarios.usuarios.repositorios;
 
-public interface RepositorioAsignar {
+import com.gestionusuarios.usuarios.modelos.Asignar;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface RepositorioAsignar extends MongoRepository<Asignar,String> {
 }
