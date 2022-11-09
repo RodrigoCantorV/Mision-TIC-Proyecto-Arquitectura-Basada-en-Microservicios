@@ -1,12 +1,13 @@
 package com.gestionusuarios.usuarios.controladores;
+
 import com.gestionusuarios.usuarios.modelos.Permiso;
 import com.gestionusuarios.usuarios.repositorios.RepositorioPermiso;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.theme.CookieThemeResolver;
-
 import java.awt.*;
 import java.util.List;
+
 @RestController
 @RequestMapping("permisos")
 public class ControladorPermiso {
