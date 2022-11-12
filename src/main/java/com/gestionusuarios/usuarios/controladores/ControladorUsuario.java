@@ -6,6 +6,9 @@ import com.gestionusuarios.usuarios.repositorios.RepositorioRol;
 import com.gestionusuarios.usuarios.repositorios.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -61,12 +64,18 @@ public class ControladorUsuario {
     }
 
     @PostMapping("/login")
-    public Usuario inicioSesion(@RequestBody Usuario usuarioEntrada){
+    public Usuario inicioSesion(@RequestBody Usuario usuarioEntrada, HttpServletResponse CodigoRespuesta){
             Usuario usuarioConsulta = miRepositorioUsuario.buscaPorCooreo(usuarioEntrada.getCorreo());
             if(usuarioConsulta != null && usuarioConsulta.getContrasena().equals(convertirSHA256(usuarioEntrada.getContrasena()))){
                 usuarioConsulta.setContrasena("");
                 return usuarioConsulta;
             }else{
+
+                try {
+                    CodigoRespuesta.sendError(HttpServletResponse.SC_UNAUTHORIZED); //Error 401 no autorizado
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 return null;
             }
     }
