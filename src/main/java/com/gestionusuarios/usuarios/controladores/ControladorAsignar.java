@@ -6,8 +6,12 @@ import com.gestionusuarios.usuarios.modelos.Rol;
 import com.gestionusuarios.usuarios.repositorios.RepositorioAsignar;
 import com.gestionusuarios.usuarios.repositorios.RepositorioPermiso;
 import com.gestionusuarios.usuarios.repositorios.RepositorioRol;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -51,4 +55,19 @@ public class ControladorAsignar {
         miRepoAsignar.deleteById(idAsignar);
         return "Se han eliminado los permisos asignados";
     }
-}
+
+    @SneakyThrows
+    @GetMapping("/{idRol}")
+    public Asignar consultarPermiso(@PathVariable String idRol, @RequestBody Permiso permisoEntrada, HttpServletResponse respuesta){
+        Permiso permisoConsulta = miRepoPermiso.obtenerPermiso(permisoEntrada.getUrl(),permisoEntrada.getMetodo());
+        Rol rolConsulta = miRepoRol.findById(idRol).orElse(null);
+        if(permisoConsulta != null && rolConsulta != null){
+            return miRepoAsignar.obtenerRolPermiso(rolConsulta.get_id(),permisoConsulta.get_id());
+        }else{
+                respuesta.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+            return null;
+            }
+
+        }
+    }
+
