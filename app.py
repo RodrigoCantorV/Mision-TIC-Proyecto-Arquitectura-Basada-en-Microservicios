@@ -1,12 +1,13 @@
-import datetime
 from flask import Flask
 from flask import request
 from flask import jsonify
 from flask_cors import CORS
-from flask_jwt_extended import create_access_token, JWTManager
+from flask_jwt_extended import create_access_token, JWTManager, verify_jwt_in_request, get_jwt_identity
 from waitress import serve
 import requests
 import json
+import datetime
+import re
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -19,8 +20,8 @@ def inicio_sesion():
     datosEntrada = request.get_json()
     headers = {'content-type':'application/json; charset= utf8'}
     print(datosEntrada)
-    respuesta = requests.post(dataConfig["url-ms-usuarios"]+"/login", json=datosEntrada, headers=headers)
-    print(dataConfig["url-ms-usuarios"]+"/login")
+    respuesta = requests.post(dataConfig["url-ms-usuarios"]+"/usuario"+"/login", json=datosEntrada, headers=headers)
+    print(dataConfig["url-ms-usuarios"]+"/usuario"+"/login")
     print(respuesta.status_code)
     print(respuesta.json())
     if respuesta.status_code == 200:
@@ -30,6 +31,46 @@ def inicio_sesion():
         return jsonify({"Token de accceso: ":token_acceso,"Usuario":usuario})
     else:
         return jsonify({"mensaje":"Unauthorized> verifique su usuario y contraseña"})
+
+
+@app.before_request
+def before_request_callback():
+    endPoint = limpiarURL(request.path)
+    excludedRoutes=["/login","/","/partidos"]
+    if excludedRoutes.__contains__(request.path):
+        print("ruta excluida ",request.path)
+        pass
+    elif verify_jwt_in_request():
+        usuario = get_jwt_identity()
+        if usuario["rol"]is not None:
+            tienePersmiso = validarPermiso (endPoint,request.method,usuario["rol"]["_id"])
+            if not tienePersmiso:
+                return jsonify({"message": "Permission denied"}), 401
+        else:
+            return jsonify({"message": "Permission denied, usuario no tiene rol"}), 401
+
+def limpiarURL(url):
+    partes = request.path.split("/")
+    for laParte in partes:
+        if re.search('\\d',laParte):
+            url = url.replace(laParte, "?")
+    return url
+
+def validarPermiso(endPoint, metodo, idRol):
+    dataConfig = loadFileConfig()
+    url = dataConfig["url-ms-usuarios"] + "/asignar/" + str(idRol)
+    print(url)
+    tienePermiso = False
+    headers= {"Content-Type":"application/json;charset = utf - 8"}
+    body = {"url": endPoint,"metodo": metodo}
+    response = requests.get(url, json=body, headers=headers)
+    try:
+        data = response.json()
+        if ("_id" in data):
+            tienePermiso = True
+    except:
+        pass
+    return tienePermiso
 
 @app.route('/')
 def hello_world():  # put application's code here
