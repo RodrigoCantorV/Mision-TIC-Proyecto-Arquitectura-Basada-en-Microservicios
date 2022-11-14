@@ -26,9 +26,10 @@ def inicio_sesion():
     print(respuesta.json())
     if respuesta.status_code == 200:
         usuario = respuesta.json()
-        tiempo_uso = datetime.timedelta(60*60*24)
+        tiempo_uso = datetime.timedelta(seconds=60*60*24)
         token_acceso = create_access_token(identity=usuario,expires_delta=tiempo_uso)
-        return jsonify({"Token de accceso: ":token_acceso,"Usuario":usuario})
+        return jsonify({"Token de accceso: ":token_acceso, "user_id": usuario["_id"]})
+        #return jsonify({"Token de accceso: ": token_acceso, "Usuario": usuario})
     else:
         return jsonify({"mensaje":"Unauthorized> verifique su usuario y contraseña"})
 
@@ -36,18 +37,21 @@ def inicio_sesion():
 @app.before_request
 def before_request_callback():
     endPoint = limpiarURL(request.path)
-    excludedRoutes=["/login","/","/partidos"]
+    excludedRoutes=["/login"]
     if excludedRoutes.__contains__(request.path):
         print("ruta excluida ",request.path)
         pass
     elif verify_jwt_in_request():
         usuario = get_jwt_identity()
         if usuario["rol"]is not None:
+            print(endPoint)
+            print(usuario["rol"])
+            print(request.method)
             tienePersmiso = validarPermiso (endPoint,request.method,usuario["rol"]["_id"])
             if not tienePersmiso:
-                return jsonify({"message": "Permission denied"}), 401
+                return jsonify({"message": "Permission denied error numero 1"}), 401
         else:
-            return jsonify({"message": "Permission denied, usuario no tiene rol"}), 401
+            return jsonify({"message": "Permission denied, usuario no tiene rol error numero 2"}), 401
 
 def limpiarURL(url):
     partes = request.path.split("/")
@@ -58,11 +62,14 @@ def limpiarURL(url):
 
 def validarPermiso(endPoint, metodo, idRol):
     dataConfig = loadFileConfig()
-    url = dataConfig["url-ms-usuarios"] + "/asignar/" + str(idRol)
-    print(url)
+    url =  dataConfig['url-ms-usuarios'] + '/asignar/' + str(idRol)
     tienePermiso = False
-    headers= {"Content-Type":"application/json;charset = utf - 8"}
-    body = {"url": endPoint,"metodo": metodo}
+    #headers= {"Content-Type":"application/json;charset = utf - 8"}
+    headers = {'content-type': 'application/json; charset= utf8'}
+    body = {
+        "url": endPoint,
+        "metodo": metodo
+            }
     response = requests.get(url, json=body, headers=headers)
     try:
         data = response.json()
@@ -71,6 +78,55 @@ def validarPermiso(endPoint, metodo, idRol):
     except:
         pass
     return tienePermiso
+
+##############################################PATHS DE PARTIDOS POLITICOS###############################################
+@app.route("/partidos",methods=['GET'])
+def getPartido():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"]+'/partidos'
+    response = requests.get(url,headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/partidos",methods=['POST'])
+def crearPartido():
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/partidos'
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['GET'])
+def listarPartido(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/partidos/'+ id
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['PUT'])
+def modificarPartido(id):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/partidos/'+ id
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/partidos/<string:id>",methods=['DELETE'])
+def eliminarPartido(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/partidos/' + id
+    response = requests.delete(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+########################################################################################################################
 
 @app.route('/')
 def hello_world():  # put application's code here
