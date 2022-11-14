@@ -128,7 +128,7 @@ def eliminarPartido(id):
     return jsonify(json)
 ########################################################################################################################
 
-##############################################PATHS DE PARTIDOS CANDIDATOS##############################################
+##################################################PATHS DE CANDIDATOS###################################################
 @app.route("/candidatos",methods=['GET'])
 def getCandidato():
     dataConfig = loadFileConfig()
@@ -183,6 +183,55 @@ def asignarPartido(id_candidato,id_partido):
     headers = {'content-type': 'application/json; charset= utf8'}
     url = dataConfig["url-ms-registraduria"] + '/candidatos/' + id_candidato + "/partido/" + id_partido
     response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+########################################################################################################################
+
+#####################################################PATHS DE MESAS#####################################################
+@app.route("/mesas",methods=['GET'])
+def getMesas():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/mesas'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/mesas",methods=['POST'])
+def crearMesa():
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/mesas'
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/mesas/<string:id>",methods=['GET'])
+def getMesa(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/mesas/' + id
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/mesas/<string:id>",methods=['PUT'])
+def modificarMesa(id):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/mesas/' + id
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/mesas/<string:id>",methods=['DELETE'])
+def eliminarMesa(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/mesas/' + id
+    response = requests.delete(url, headers=headers)
     json = response.json()
     return jsonify(json)
 ########################################################################################################################
