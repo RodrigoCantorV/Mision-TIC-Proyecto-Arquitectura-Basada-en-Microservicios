@@ -293,6 +293,72 @@ def getConsultaf():
     json = response.json()
     return jsonify(json)
 ########################################################################################################################
+
+##################################################PATHS DE USUARIOS#####################################################
+
+@app.route("/usuario/listar",methods = ["GET"])
+def listarUsuarios():
+    dataConfig = loadFileConfig()
+    headers = {'content-type':'application/json; charset= utf8'}
+    response = requests.get(dataConfig["url-ms-usuarios"]+"/usuario"+"/listar", headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/usuario/crear",methods = ["POST"])
+def crearUsuarios():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    datos = request.get_json()
+    url = dataConfig["url-ms-usuarios"] + '/usuario/crear'
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/usuario/actualizar/<string:id_usuario>",methods = ["PUT"])
+def actualizarUsuarios(id_usuario):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    datos = request.get_json()
+    url = dataConfig["url-ms-usuarios"] + '/usuario/actualizar/' + id_usuario
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/usuario/<string:id_usuario>/rol/<string:id_rol>",methods = ["PUT"])
+def asignarRol(id_usuario,id_rol):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/usuario/' + id_usuario+ '/rol/' + id_rol
+    response = requests.put(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/usuario/eliminar/<string:id_usuario>",methods = ["DELETE"])
+def eliminarUsuario(id_usuario):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/usuario/eliminar?idUsuario=' + id_usuario
+    response = requests.delete(url, headers=headers)
+    return jsonify({"mensaje":"Usuario con id " + id_usuario + " eliminado"})
+########################################################################################################################
+
+##################################################PATHS DE ROLES########################################################
+
+# CODIGO AQUI!
+
+########################################################################################################################
+
+##################################################PATHS DE PERMISOS#####################################################
+
+# CODIGO AQUI!
+
+########################################################################################################################
+
+###################################################PATHS DE ASIGNAR#####################################################
+
+# CODIGO AQUI!
+
+########################################################################################################################
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
