@@ -235,6 +235,64 @@ def eliminarMesa(id):
     json = response.json()
     return jsonify(json)
 ########################################################################################################################
+
+##################################################PATHS DE RESULTADOS###################################################
+@app.route("/resultados",methods=['GET'])
+def getResultados():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultados'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/resultado/candidato/<string:id_candidato>/mesa/<string:id_mesa>",methods=['POST'])
+def crearResultado(id_candidato,id_mesa):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultados/cansidato/' + id_candidato + '/mesa/' + id_mesa
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/resultado/<string:id>",methods=['GET'])
+def getResultado(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultado/' + id
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/resultado/<string:id_resultado>/candidato/<string:id_candidato>/mesa/<string:id_mesa>",methods=['PUT'])
+def modificarResultado(id_resultado,id_candidato,id_mesa):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultado/' + id_resultado + '/candidato/' + id_candidato + '/mesa/' + id_mesa
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/resultado/<string:id>",methods=['DELETE'])
+def eliminarResultado(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultado/' + id
+    response = requests.delete(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/resultado/consulta",methods=['GET'])
+def getConsultaf():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/resultado/consulta'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+########################################################################################################################
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
