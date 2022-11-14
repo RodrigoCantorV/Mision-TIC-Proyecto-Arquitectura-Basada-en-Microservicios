@@ -128,6 +128,64 @@ def eliminarPartido(id):
     return jsonify(json)
 ########################################################################################################################
 
+##############################################PATHS DE PARTIDOS CANDIDATOS##############################################
+@app.route("/candidatos",methods=['GET'])
+def getCandidato():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/candidatos",methods=['POST'])
+def crearCandidato():
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos'
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['GET'])
+def listarCandidato(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos/' + id
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['PUT'])
+def modificarCandidato(id):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos/' + id
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id>",methods=['DELETE'])
+def eliminarCandidato(id):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos/' + id
+    response = requests.delete(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/candidatos/<string:id_candidato>/partido/<string:id_partido>",methods=['PUT'])
+def asignarPartido(id_candidato,id_partido):
+    dataConfig = loadFileConfig()
+    datos = request.get_json()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-registraduria"] + '/candidatos/' + id_candidato + "/partido/" + id_partido
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+########################################################################################################################
 @app.route('/')
 def hello_world():  # put application's code here
     return 'Hello World!'
