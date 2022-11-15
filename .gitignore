@@ -15,7 +15,7 @@ env/
 
 # Log files
 *.log
-*.json
+
 # Package files
 *.jar
 
