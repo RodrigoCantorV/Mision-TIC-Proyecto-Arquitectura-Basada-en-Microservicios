@@ -344,20 +344,121 @@ def eliminarUsuario(id_usuario):
 
 ##################################################PATHS DE ROLES########################################################
 
-# CODIGO AQUI!
+@app.route("/rol/listar",methods = ["GET"])
+def listarRoles():
+    dataConfig = loadFileConfig()
+    headers = {'content-type':'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/rol/listar'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
 
+@app.route("/rol/crear",methods = ["POST"])
+def crearRol():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/rol/crear'
+    datos = request.get_json()
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/rol/actualizar/<string:id_rol>",methods = ["PUT"])
+def actualizarRol(id_rol):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    datos = request.get_json()
+    url = dataConfig["url-ms-usuarios"] + '/rol/actualizar/' + id_rol
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/rol/eliminar/<string:id_rol>",methods = ["DELETE"])
+def eliminarRol(id_rol):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/rol/eliminar?idRol=' + id_rol
+    response = requests.delete(url, headers=headers)
+    return jsonify({"mensaje": "Rol con id " + id_rol + " eliminado"})
 ########################################################################################################################
 
 ##################################################PATHS DE PERMISOS#####################################################
 
-# CODIGO AQUI!
+@app.route("/permisos/listar",methods = ["GET"])
+def listarPermisos():
+    dataConfig = loadFileConfig()
+    headers = {'content-type':'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/permisos/listar'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
 
+@app.route("/permisos/crear",methods = ["POST"])
+def crearPermisos():
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/permisos/crear'
+    datos = request.get_json()
+    response = requests.post(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/permisos/actualizar/<string:id_permiso>",methods = ["PUT"])
+def actualizarPermiso(id_permiso):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    datos = request.get_json()
+    url = dataConfig["url-ms-usuarios"] + '/permisos/actualizar/' + id_permiso
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/permisos/eliminar/<string:id_permiso>",methods = ["DELETE"])
+def eliminarPermiso(id_permiso):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/permisos/eliminar/' + id_permiso
+    response = requests.delete(url, headers=headers)
+    return jsonify({"mensaje": "Permiso con id " + id_permiso + " eliminado"})
 ########################################################################################################################
 
 ###################################################PATHS DE ASIGNAR#####################################################
 
-# CODIGO AQUI!
+@app.route("/asignar",methods = ["GET"])
+def listarAsignaciones():
+    dataConfig = loadFileConfig()
+    headers = {'content-type':'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/asignar'
+    response = requests.get(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
 
+@app.route("/asignar/rol/<string:id_rol>/permiso/<string:id_permiso>",methods = ["POST"])
+def asignarPermisos(id_rol,id_permiso):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/asignar/' + id_rol + '/' + id_permiso
+    response = requests.post(url, headers=headers)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/asignar/<string:id_asignar>/rol/<string:id_rol>/permiso/<string:id_permiso>",methods = ["PUT"])
+def actualizarAsignacion(id_asignar,id_rol,id_permiso):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    datos = request.get_json()
+    url = dataConfig["url-ms-usuarios"] + '/asignar/' + id_asignar + '/' + id_rol + '/' + id_permiso
+    response = requests.put(url, headers=headers, json=datos)
+    json = response.json()
+    return jsonify(json)
+
+@app.route("/asignar/eliminar/<string:id_asignar>",methods = ["DELETE"])
+def eliminarAsignacion(id_asignar):
+    dataConfig = loadFileConfig()
+    headers = {'content-type': 'application/json; charset= utf8'}
+    url = dataConfig["url-ms-usuarios"] + '/asignar/' + id_asignar
+    response = requests.delete(url, headers=headers)
+    return jsonify({"mensaje": "la asignacion con id " + id_asignar + " eliminado"})
 ########################################################################################################################
 @app.route('/')
 def hello_world():  # put application's code here
